@@ -1,2 +1,3 @@
 .venv/*
 list*/__pycache__
+*/pictures/*
