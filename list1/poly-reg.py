@@ -13,15 +13,16 @@ def generate_data_points():
 
     return x, y
 
-def plot_2d_data_and_predictions(x, y, y_pred, title):
+def plot_2d_data_and_predictions(x, y, y_pred, title, equation):
     """Plot data points and model predictions on the same plot"""
 
     plt.scatter(x, y, label="Data")
     plt.plot(x, y_pred, color='black', linewidth=2, label="Predictions")
+    plt.text(0.05, 0.9, equation, transform=plt.gca().transAxes, fontsize=12, va="bottom", ha="left", bbox=dict(facecolor='white', alpha=0.8))
     plt.title(title)
     plt.xlabel("X")
     plt.ylabel("Y")
-    plt.legend()
+    plt.legend(loc="lower right")
     plt.show()
 
 def perform_polynomial_regression(x_train, y_train, x_test, deg):
@@ -37,7 +38,15 @@ def perform_polynomial_regression(x_train, y_train, x_test, deg):
     lin_reg.fit(x_train_poly, y_train)
     lin_prediction = lin_reg.predict(x_test_poly)
 
-    return lin_prediction
+    # get the equation
+    coeff = lin_reg.coef_[0]
+    intercept = lin_reg.intercept_[0]
+    lin_equation = f"{intercept:.2f}"
+    for i in range(0, deg):
+        lin_equation = f"{coeff[i]:.2f}x^{i+1} + " + lin_equation
+    lin_equation = "y = " + lin_equation
+
+    return lin_prediction, lin_equation
 
 def calculate_mse(x_oryginal, x_pred):
     """Calculate Mean Square Error for predicted regression line"""
@@ -61,7 +70,7 @@ if __name__ == "__main__":
     for deg in range(2, 5):
 
         # train model and get predictions
-        poly_prediction = perform_polynomial_regression(x_train, y_train, x, deg)
+        poly_prediction, poly_equation = perform_polynomial_regression(x_train, y_train, x, deg)
 
         # calculate and print MSE
         mse = calculate_mse(x, poly_prediction)
@@ -69,4 +78,4 @@ if __name__ == "__main__":
 
         # plot data and predictions
         title = f"Polynomial regression (degree={deg})"
-        plot_2d_data_and_predictions(x, y, poly_prediction, title)
+        plot_2d_data_and_predictions(x, y, poly_prediction, title, poly_equation)

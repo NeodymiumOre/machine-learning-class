@@ -12,15 +12,16 @@ def generate_data_points():
 
     return x, y
 
-def plot_2d_data_and_predictions(x, y, y_pred, title):
+def plot_2d_data_and_predictions(x, y, y_pred, title, equation):
     """Plot data points and model predictions on the same plot"""
 
     plt.scatter(x, y, label="Data")
     plt.plot(x, y_pred, color='black', linewidth=2, label="Predictions")
+    plt.text(0.05, 0.9, equation, transform=plt.gca().transAxes, fontsize=12, va="bottom", ha="left", bbox=dict(facecolor='white', alpha=0.8))
     plt.title(title)
     plt.xlabel("X")
     plt.ylabel("Y")
-    plt.legend()
+    plt.legend(loc="lower right")
     plt.show()
 
 def get_ls_prediction(x_train, y_train, x_test):
@@ -31,7 +32,10 @@ def get_ls_prediction(x_train, y_train, x_test):
     ls_model.fit(x_train, y_train)
     ls_predictions = ls_model.predict(x_test)
 
-    return ls_predictions
+    # get the equation
+    ls_equation = f"y = {ls_model.coef_[0][0]:.2f}x + {ls_model.intercept_[0]:.2f}"
+
+    return ls_predictions, ls_equation
 
 def get_sgd_prediction(x_train, y_train, x_test):
     """Return prediction based on training set from SGD model"""
@@ -40,7 +44,10 @@ def get_sgd_prediction(x_train, y_train, x_test):
     sgd_model.fit(x_train, y_train)
     sgd_predictions = sgd_model.predict(x_test)
 
-    return sgd_predictions
+    # get the equation
+    sgd_equation = f"y = {sgd_model.coef_[0]:.2f}x + {sgd_model.intercept_[0]:.2f}"
+
+    return sgd_predictions, sgd_equation
 
 
 if __name__ == "__main__":
@@ -55,10 +62,10 @@ if __name__ == "__main__":
     # PERFORM LS REGRESSION
 
     # train model and get predictions
-    ls_predictions = get_ls_prediction(x_train, y_train, x)
+    ls_predictions, ls_equation = get_ls_prediction(x_train, y_train, x)
     # plot data and predictions for least lquares
     title = "Least Squares Linear Regression"
-    plot_2d_data_and_predictions(x, y, ls_predictions, title)
+    plot_2d_data_and_predictions(x, y, ls_predictions, title, ls_equation)
 
     # PERFORM SGD REGRESSION
 
@@ -70,8 +77,8 @@ if __name__ == "__main__":
         for iterations in num_iterations:
 
             # train model and get predictions
-            sgd_predictions = get_sgd_prediction(x_train, y_train, x)
+            sgd_predictions, sgd_equation = get_sgd_prediction(x_train, y_train, x)
             
             # plot data and predictions for SGD method
             title = f"SGD Linear Regression (LR={lr}, Iterations={iterations})"
-            plot_2d_data_and_predictions(x, y, sgd_predictions, title)
+            plot_2d_data_and_predictions(x, y, sgd_predictions, title, sgd_equation)
