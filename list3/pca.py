@@ -4,86 +4,78 @@ import pandas as pd
 from sklearn.model_selection import train_test_split
 
 
-def plot_2d_data(data):
-    """Plot array of data on 2D colorplot"""
-
-    # fig = plt.figure()
-    # ax = fig.add_subplot()
-
-    marker_size = 20
-    plt.style.use('seaborn-v0_8')
-    plt.scatter(data[0],
-                data[1],
-                s=marker_size,
-                marker='o',
-                c='b',)
-    plt.xlabel('x')
-    plt.ylabel('y')
-
-    plt.axis('square')
-    plt.show()
-
-
 if __name__ == "__main__":
 
-    # PREPARE DATA SET
-
+    # define data (2)
     X = np.array([
         [2.5, 0.5, 2.2, 1.9, 3.1, 2.3, 2, 1, 1.5, 1.1],
         [2.4, 0.7, 2.9, 2.2, 3, 2.7, 1.6, 1.1, 1.6, 0.9]
     ])
+
+    # center data (5)
+    X_centered = X
+    X_centered[0] = X[0] - np.mean(X[0])
+    X_centered[1] = X[1] - np.mean(X[1])
+
+    # plot X
+    # plot_x = plt.subplot()
+    plt.figure()
+    plt.style.use('seaborn-v0_8')
+    plt.scatter(X[0], X[1], s=20, marker='o', c='b',)
+    plt.xlabel('x')
+    plt.ylabel('y')
+    plt.axis('square')
+    plt.show()
+
+    # calculate covariance matrix (6)
+    cov_matrix = np.cov(X_centered)
+    print(cov_matrix)
+
+    # calculate eigendecomposition (7)
+    D, V = np.linalg.eig(cov_matrix)
+    print(D, V)
+
+    # plot eigenvectors (9)
+    fig2 = plt.figure()
+    plt.style.use('seaborn-v0_8')
+    plt.quiver(V[0, 0], V[1, 0], color=['r'], scale=4)
+    plt.quiver(V[0, 1], V[1, 1], color=['b'], scale=4)
+    plt.xlabel('x')
+    plt.ylabel('y')
+    plt.axis('square')
+    plt.show()
+
+    # prepare matrices u and z (10)
+    u = V[0] if D[0] > D[1] else V[1]
+    u = np.expand_dims(u, 1)
+    z = V[0] if D[0] < D[1] else V[1]
+    z = np.expand_dims(z, 1)
+
+    # perform projection from (11)
+    Y = np.outer(np.dot(np.transpose(X), u), np.transpose(u))
+    Y = np.transpose(Y)
     
+    # plot Y vector (12)
+    fig3 = plt.figure()
+    plt.style.use('seaborn-v0_8')
+    plt.quiver(Y[0, 0], Y[0, 9], color=['r'])
+    plt.quiver(Y[1, 0], Y[1, 9], color=['b'])
+    plt.xlabel('x')
+    plt.ylabel('y')
+    plt.axis('square')
+    plt.show()
 
-    plot_2d_data(X)
-
-    # # plot imported data and save the image
-    # colorplot_2d_data(data, 'b')
-    # plt.savefig('pictures/tree/oryginal_dataset.png')
-    # plt.show()
-
-    # # split dataset into train and test
-    # x_train, x_test, y_train, y_test = train_test_split(data[['feature 1', 'feature 2']].to_numpy(),
-    #                                                     data['label'].to_numpy(),
-    #                                                     random_state=1,
-    #                                                     test_size=0.2)
-    # train_data = pd.DataFrame({'feature 1':x_train.T[0], 'feature 2':x_train.T[1], 'label':y_train})
-
-    # # PERFORM CLASSIFICATION WITH DEFAULT HYPERPARAMETERS
-
-    # tree_model = DecisionTreeClassifier()
-    # tree_model.fit(x_train, y_train)
-    # tree_predictions = tree_model.predict(x_test)
-    # score = tree_model.score(x_test, y_test)
-    # print(f"Accuracy score of decision tree with default hyperparameters: {score:.4}")
-    # print("Default hyperparameters:")
-    # print(f"[criterion: {tree_model.criterion}, depth: {tree_model.get_depth()}, min_samples_leaf: {tree_model.min_samples_leaf}]")
-
-    # # EXPERIMENT WITH HYPERPARAMETERS
-
-    # # choose hyperparameters for test with their values
-    # criterion = ("gini", "entropy", "log_loss")
-    # min_samples_leaf = range(1, 20, 1)
-    # max_depth = range(3, 20, 1)
-
-    # parameters = dict(criterion=criterion, max_depth=max_depth, min_samples_leaf=min_samples_leaf)
-
-    # # create model for grid searching
-    # gs_model = GridSearchCV(DecisionTreeClassifier(random_state=1), parameters, n_jobs=-1)
-    # gs_model.fit(data[['feature 1', 'feature 2']].to_numpy(), data['label'].to_numpy())
-
-    # # prnit best result
-    # print("Best hyperparameters' values from grid search:")
-    # print(f"{str(gs_model.best_estimator_)}, {gs_model.best_score_:.3}")
-
-    # # PLOT RESULTS
-
-    # # create subsets of data
-    # data_train = pd.DataFrame({'feature 1': x_train.T[0], 'feature 2': x_train.T[1], 'label': y_train})
-    # data_test = pd.DataFrame({'feature 1': x_test.T[0], 'feature 2': x_test.T[1], 'label': y_test})
-
-    # # plot results
-    # colorplot_2d_data(data_train, 'k')
-    # colorplot_2d_data(data_test, 'b')
-    # plt.savefig('pictures/tree/fitted_dataset.png')
-    # plt.show()
+    # perform projection from (13-1)
+    Z = np.outer(np.dot(np.transpose(X), z), np.transpose(z))
+    Z = np.transpose(Z)
+    
+    # plot Y vector (13-2)
+    fig4 = plt.figure()
+    plt.style.use('seaborn-v0_8')
+    plt.quiver(Z[0, 0], Z[0, 9], color=['r'])
+    plt.quiver(Z[1, 0], Z[1, 9], color=['b'])
+    plt.xlabel('x')
+    plt.ylabel('y')
+    plt.axis('square')
+    plt.show()
 
