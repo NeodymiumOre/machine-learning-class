@@ -70,15 +70,15 @@ if __name__ == "__main__":
     score = svc_model.score(x_test, y_test)
     print(f"Accuracy score of SVC with default hyperparameters: {score:.4}")
     print("Default hyperparameters:")
-    print(f"xd")
+    print(f"{svc_model.get_params()}")
 
     # EXPERIMENT WITH HYPERPARAMETERS
 
     # choose hyperparameters for test with their values
-    kernel = ['linear', 'poly']
-    c = []
-    degree = []
-    gamma = []
+    kernel = ['linear', 'poly', 'rbf', 'sigmoid']
+    c = [0.01, 0.1, 1, 10, 100]
+    degree = [2, 3, 4]
+    gamma = [0.01, 0.1, 1, 10, 100]
 
     parameters = dict(kernel=kernel, C=c, degree=degree, gamma=gamma)
 
@@ -99,6 +99,6 @@ if __name__ == "__main__":
     # plot results
     colorplot_2d_data(data_train, 'k')
     colorplot_2d_data(data_test, 'b')
-    plt.savefig('pictures/tree/fitted_dataset.png')
+    plt.savefig('pictures/svc/fitted_dataset.png')
     plt.show()
 
