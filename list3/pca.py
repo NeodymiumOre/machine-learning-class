@@ -12,28 +12,39 @@ if __name__ == "__main__":
         [2.4, 0.7, 2.9, 2.2, 3, 2.7, 1.6, 1.1, 1.6, 0.9]
     ])
 
-    # center data (5)
-    X_centered = X
-    X_centered[0] = X[0] - np.mean(X[0])
-    X_centered[1] = X[1] - np.mean(X[1])
-
     # plot X
-    # plot_x = plt.subplot()
     plt.figure()
     plt.style.use('seaborn-v0_8')
     plt.scatter(X[0], X[1], s=20, marker='o', c='b',)
     plt.xlabel('x')
     plt.ylabel('y')
     plt.axis('square')
+    plt.savefig('pictures/x.png', bbox_inches='tight')
+    plt.show()
+
+    # center data (5)
+    X_centered = X
+    X_centered[0] = X[0] - np.mean(X[0])
+    X_centered[1] = X[1] - np.mean(X[1])
+
+    # plot centered X
+    plt.figure()
+    plt.style.use('seaborn-v0_8')
+    plt.scatter(X[0], X[1], s=20, marker='o', c='b',)
+    plt.xlabel('x')
+    plt.ylabel('y')
+    plt.axis('square')
+    plt.savefig('pictures/x_centered.png', bbox_inches='tight')
     plt.show()
 
     # calculate covariance matrix (6)
     cov_matrix = np.cov(X_centered)
-    print(cov_matrix)
+    print(f"Covariance matrix: {cov_matrix}")
 
     # calculate eigendecomposition (7)
     D, V = np.linalg.eig(cov_matrix)
-    print(D, V)
+    print(f"Eigenvalues: {D}")
+    print(f"Eigenvectors: {V}")
 
     # plot eigenvectors (9)
     fig2 = plt.figure()
@@ -43,6 +54,7 @@ if __name__ == "__main__":
     plt.xlabel('x')
     plt.ylabel('y')
     plt.axis('square')
+    plt.savefig('pictures/eigv.png', bbox_inches='tight')
     plt.show()
 
     # prepare matrices u and z (10)
@@ -51,9 +63,13 @@ if __name__ == "__main__":
     z = V[0] if D[0] < D[1] else V[1]
     z = np.expand_dims(z, 1)
 
+    print(f"Matrux u: {u}")
+    print(f"Matrux z: {z}")
+
     # perform projection from (11)
     Y = np.outer(np.dot(np.transpose(X), u), np.transpose(u))
     Y = np.transpose(Y)
+    print(f"Vectors from Y: {Y}")
     
     # plot Y vector (12)
     fig3 = plt.figure()
@@ -63,11 +79,13 @@ if __name__ == "__main__":
     plt.xlabel('x')
     plt.ylabel('y')
     plt.axis('square')
+    plt.savefig('pictures/eigv_u.png', bbox_inches='tight')
     plt.show()
 
     # perform projection from (13-1)
     Z = np.outer(np.dot(np.transpose(X), z), np.transpose(z))
     Z = np.transpose(Z)
+    print(f"Vectors from Z: {Z}")
     
     # plot Y vector (13-2)
     fig4 = plt.figure()
@@ -77,5 +95,6 @@ if __name__ == "__main__":
     plt.xlabel('x')
     plt.ylabel('y')
     plt.axis('square')
+    plt.savefig('pictures/eigv_z.png', bbox_inches='tight')
     plt.show()
 
